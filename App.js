@@ -1,20 +1,79 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import Onboardingscreen from './screens/Onboarding';
+import * as React from 'react';
+import { Text, View, ActivityIndicator, StyleSheet } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import OnboardingScreen from './screens/Onboarding';
+import HomeScreen from './screens/Home';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useState } from 'react';
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [hasOnboarded, setHasOnboarded] = useState(null); // Track onboarding state
+  const [isLoading, setIsLoading] = useState(true); // Track loading state while AsyncStorage is being checked
+
+  // 🔧 TEMPORARY: clear AsyncStorage for testing
+  useEffect(() => {
+    const clearAsyncStorage = async () => {
+      await AsyncStorage.removeItem('hasOnboarded');
+      console.log('AsyncStorage cleared');
+    };
+    clearAsyncStorage();
+  }, []);
+
+  useEffect(() => {
+    const checkOnboarding = async () => {
+      try {
+        const value = await AsyncStorage.getItem('hasOnboarded');
+        console.log('AsyncStorage hasOnboarded value:', value); // Debug log
+        setHasOnboarded(value === 'true'); // Set onboarding state based on AsyncStorage value
+      } catch (error) {
+        console.error('Error reading AsyncStorage:', error);
+      } finally {
+        setIsLoading(false); // Finished checking AsyncStorage, set loading to false
+      }
+    };
+
+    checkOnboarding(); // Call the function when app starts
+  }, []);
+
+  if (isLoading) {
+    // Show splash screen or loading indicator while checking AsyncStorage
+    return (
+      <View style={styles.splashContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <Onboardingscreen/>
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        {hasOnboarded ? (
+          // If onboarding is completed, show Home screen
+          <Stack.Screen name="Home" component={HomeScreen} />
+        ) : (
+          // If onboarding is not completed, show Onboarding screen
+          <Stack.Screen
+          name="Onboarding"
+          options={{ headerShown: false }}
+        >
+          {(props) => <OnboardingScreen {...props} onOnboard={() => setHasOnboarded(true)} />}
+        </Stack.Screen>
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  splashContainer: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
   },
 });
+
+
