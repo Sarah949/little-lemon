@@ -1,8 +1,22 @@
-import React from 'react';
-import { View,Image,TextInput, Text, StyleSheet,TouchableOpacity, Pressable } from 'react-native';
-import { ScrollView } from 'react-native';
 
-const ProfileScreen = ({ navigation }) => {
+import { View,Image,TextInput, Text, StyleSheet,TouchableOpacity, Pressable ,Switch} from 'react-native';
+import { ScrollView } from 'react-native';
+import React, { useState } from 'react';
+
+
+
+const ProfileScreen = ({ navigation  }) => {
+
+  const [checkedStates, setCheckedStates] = useState([false, false, false, false]);
+
+  const toggleCheckbox = (index) => {
+    const updated = [...checkedStates];
+    updated[index] = !updated[index];
+    setCheckedStates(updated);
+  };
+
+  const labels = ['Order statuses', 'Password changes', 'Special offers', 'Newsletter'];
+
   return (
       <ScrollView  style={styles.container}>
       {/* header */}
@@ -56,6 +70,22 @@ const ProfileScreen = ({ navigation }) => {
 
           <Text style={styles.Title}>Email notifications</Text>
 
+          <View>
+      {labels.map((label, index) => (
+        <TouchableOpacity
+          key={index}
+          style={styles.checkboxContainer}
+          onPress={() => toggleCheckbox(index)}
+        >
+          <View style={[styles.checkbox, checkedStates[index] && styles.checked]}>
+            {checkedStates[index] && <Text style={styles.checkmark}>✓</Text>}
+          </View>
+          <Text style={styles.label}>{label}</Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+
+
            <Pressable style={styles.button3} >
              <Text style={styles.buttonText3}>Log out</Text>
            </Pressable>
@@ -77,6 +107,7 @@ const ProfileScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+
 
   container: {
     flex: 1,
@@ -186,6 +217,30 @@ const styles = StyleSheet.create({
     color: '#000000',
     textAlign: 'center',
     fontSize: 15,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+  },
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderWidth: 2,
+    borderColor: '#555',
+    marginRight: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checked: {
+    backgroundColor: '#495E57',
+  },
+  checkmark: {
+    color: 'white',
+    fontSize: 16,
+  },
+  label: {
+    fontSize: 16,
   },
 });
 
