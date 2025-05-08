@@ -1,22 +1,191 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View,Image,TextInput, Text, StyleSheet,TouchableOpacity, Pressable } from 'react-native';
+import { ScrollView } from 'react-native';
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ navigation }) => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Welcome to your Profile!</Text>
-    </View>
+      <ScrollView  style={styles.container}>
+      {/* header */}
+         <View style={styles.header}>
+         <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Image
+          source={require('../assets/arrow-left-circle.png')} // Replace with your image path
+          style={{ width: 30, height: 30 }}
+        />
+      </TouchableOpacity>
+           <Image source={require('../assets/Logo.png')} />
+           <Image source={require('../assets/Profile.png')}  style={{ width: 40, height: 40 }} />
+         </View>
+   
+         <View style={styles.container}>
+           <Text style={styles.Title}>Personal information</Text>
+           <Text style={styles.Text}>Avatar</Text>
+
+           <View style={styles.footer}>
+           <Image source={require('../assets/Profile.png')}  style={{ width: 40, height: 40 }} />
+          <Pressable style={styles.button1} >
+             <Text style={styles.buttonText1}>changes</Text>
+           </Pressable>
+
+           <Pressable style={styles.button2} >
+             <Text style={styles.buttonText2}>Remove</Text>
+           </Pressable>
+           </View>
+           
+   
+           <Text style={styles.Text}>First Name</Text>
+           <TextInput
+             style={styles.inputBox}/>
+
+           <Text style={styles.Text}>Last Name</Text>
+           <TextInput
+             style={styles.inputBox}
+           />
+   
+           <Text style={styles.Text}>Email</Text>
+           <TextInput
+             style={styles.inputBox}
+             keyboardType="email-address"
+             autoCapitalize="none"
+           />
+           <Text style={styles.Text}>Phone number</Text>
+           <TextInput
+             style={styles.inputBox}
+             keyboardType="Phone number"
+             autoCapitalize="none"/>
+
+          <Text style={styles.Title}>Email notifications</Text>
+
+           <Pressable style={styles.button3} >
+             <Text style={styles.buttonText3}>Log out</Text>
+           </Pressable>
+
+          <View style={styles.footer}>
+          <Pressable style={styles.button4} >
+             <Text style={styles.buttonText4}>Discard changes</Text>
+           </Pressable>
+
+           <Pressable style={styles.button5} >
+             <Text style={styles.buttonText5}>Save changes</Text>
+           </Pressable>
+           </View>
+         </View>
+  
+         </ScrollView >
+      
   );
 };
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    padding: 0,
+    backgroundColor:'#FFFFFF',
   },
-  text: {
+  header: {
+    alignItems: 'center',
+    padding: 20,
+    flexDirection: 'row'
+  },
+  footer: {
+    alignItems: 'center',
+    paddingVertical: 0,
+    flexDirection: 'row'
+  },
+  Title: {
     fontSize: 24,
+    padding: 10,
+    color: '#000000',
+    textAlign: 'left',
+  },
+  Text: {
+    fontSize: 15,
+    padding: 0,
+    color: '#000000',
+    textAlign: 'left',
+  },
+  inputBox: {
+    height: 40,
+    margin: 12,
+    borderWidth: 2,
+    borderRadius: 8,
+    fontSize: 16,
+    borderColor: '#EDEFEE',
+    backgroundColor: '#FFFFFF',
+  },
+  button1: {
+    marginRight: 20,
+    fontSize: 22,
+    padding: 5,
+    marginVertical: 8,
+    width: 100,
+    backgroundColor: '#495E57',
+    borderRadius: 8,
+  },
+  buttonText1: {
+    color: '#FFFFFF',
+    textAlign: 'center',
+    fontSize: 15,
+  },
+  button2: {
+    marginRight: 20,
+    fontSize: 22,
+    padding: 5,
+    marginVertical: 8,
+    width: 100,
+    borderColor:'#000000',
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+  buttonText2: {
+    color: '#000000',
+    textAlign: 'center',
+    fontSize: 15,
+  },
+  button3: {
+    marginRight: 20,
+    fontSize: 22,
+    padding: 5,
+    marginVertical: 8,
+    backgroundColor: '#F4CE14',
+    borderColor:'#EE9972',
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+  buttonText3: {
+    color: '#000000',
+    textAlign: 'center',
+    fontSize: 24,
+  },
+  button4: {
+    marginRight: 20,
+    fontSize: 22,
+    padding: 5,
+    marginVertical: 8,
+    
+    backgroundColor: '#495E57',
+    borderRadius: 8,
+  },
+  buttonText4: {
+    color: '#FFFFFF',
+    textAlign: 'center',
+    fontSize: 15,
+  },
+  button5: {
+    marginRight: 20,
+    fontSize: 22,
+    padding: 5,
+    marginVertical: 8,
+   
+    borderColor:'#000000',
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+  buttonText5: {
+    color: '#000000',
+    textAlign: 'center',
+    fontSize: 15,
   },
 });
 

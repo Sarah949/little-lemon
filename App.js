@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import OnboardingScreen from './screens/Onboarding';
 import HomeScreen from './screens/Home';
+import ProfileScreen from './screens/Profile'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 
@@ -13,14 +14,14 @@ export default function App() {
   const [hasOnboarded, setHasOnboarded] = useState(null); // Track onboarding state
   const [isLoading, setIsLoading] = useState(true); // Track loading state while AsyncStorage is being checked
 
-  // 🔧 TEMPORARY: clear AsyncStorage for testing
-  useEffect(() => {
-    const clearAsyncStorage = async () => {
-      await AsyncStorage.removeItem('hasOnboarded');
-      console.log('AsyncStorage cleared');
-    };
-    clearAsyncStorage();
-  }, []);
+  // // 🔧 TEMPORARY: clear AsyncStorage for testing
+  // useEffect(() => {
+  //   const clearAsyncStorage = async () => {
+  //     await AsyncStorage.removeItem('hasOnboarded');
+  //     console.log('AsyncStorage cleared');
+  //   };
+  //   clearAsyncStorage();
+  // }, []);
 
   useEffect(() => {
     const checkOnboarding = async () => {
@@ -51,8 +52,8 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         {hasOnboarded ? (
-          // If onboarding is completed, show Home screen
-          <Stack.Screen name="Home" component={HomeScreen} />
+          // If onboarding is completed, show Profile screen
+          <Stack.Screen name="Profile" options={{ headerShown: false }} component={ProfileScreen} />
         ) : (
           // If onboarding is not completed, show Onboarding screen
           <Stack.Screen
