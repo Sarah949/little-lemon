@@ -27,7 +27,9 @@ const ProfileScreen = ({ navigation  }) => {
           style={{ width: 30, height: 30 }}
         />
       </TouchableOpacity>
-           <Image source={require('../assets/Logo.png')} />
+            <View style={{ position: 'absolute', left: 0, right: 0, alignItems: 'center' }}>
+             <Image source={require('../assets/Logo.png')} />
+             </View>
            <Image source={require('../assets/Profile.png')}  style={{ width: 40, height: 40 }} />
          </View>
    
@@ -115,14 +117,19 @@ const styles = StyleSheet.create({
     backgroundColor:'#FFFFFF',
   },
   header: {
-    alignItems: 'center',
-    padding: 20,
-    flexDirection: 'row'
+   flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  paddingHorizontal: 10,
+  height: 60,
+  position: 'relative',
   },
   footer: {
     alignItems: 'center',
     paddingVertical: 0,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
   },
   Title: {
     fontSize: 24,
@@ -132,7 +139,7 @@ const styles = StyleSheet.create({
   },
   Text: {
     fontSize: 15,
-    padding: 0,
+    padding: 10,
     color: '#000000',
     textAlign: 'left',
   },
@@ -175,7 +182,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   button3: {
-    marginRight: 20,
+    margin: 10,
     fontSize: 22,
     padding: 5,
     marginVertical: 8,
@@ -190,11 +197,10 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   button4: {
-    marginRight: 20,
+    margin: 20,
     fontSize: 22,
     padding: 5,
     marginVertical: 8,
-    
     backgroundColor: '#495E57',
     borderRadius: 8,
   },
@@ -204,11 +210,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   button5: {
-    marginRight: 20,
+    margin: 20,
     fontSize: 22,
     padding: 5,
     marginVertical: 8,
-   
     borderColor:'#000000',
     borderRadius: 8,
     borderWidth: 1,
