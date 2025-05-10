@@ -24,6 +24,9 @@ export default function OnboardingScreen({ navigation, onOnboard}) {
       Alert.alert('Validation Error', 'Please enter a valid email address.');
     } else {
       await AsyncStorage.setItem('hasOnboarded', 'true');
+      await AsyncStorage.setItem('userFirstName', firstName);
+      await AsyncStorage.setItem('userEmail', email);
+      await AsyncStorage.setItem('hasOnboarded', 'true');
       console.log('Onboarding complete, hasOnboarded set to true'); // Debug log
       // setHasOnboarded(true); 
       // navigation.replace('Home'); // Navigate to Home and prevent going back
