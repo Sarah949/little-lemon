@@ -15,16 +15,20 @@ import { MaskedTextInput } from 'react-native-mask-text';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
 import { CommonActions } from '@react-navigation/native';
+import { useContext } from 'react';
+import { ImageContext } from './ImageContext';
 
 
 const ProfileScreen = () => {
-  const [image, setImage] = useState(null);
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+
+  const { image, setImage, firstName, setFirstName, lastName, setLastName } = useContext(ImageContext);
+
+  // const [image, setImage] = useState(null);
+  // const [firstName, setFirstName] = useState('');
+  // const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [checkedStates, setCheckedStates] = useState([false, false, false, false]);
-
   const initials = `${firstName?.charAt(0) ?? ''}${lastName?.charAt(0) ?? ''}`.toUpperCase();
 
   const pickImage = async () => {
@@ -117,17 +121,16 @@ const handleLogout = async () => {
 };
 
 
-
   return (
     <ScrollView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity>
-          <Image
-            source={require('../assets/arrow-left-circle.png')}
-            style={{ width: 30, height: 30 }}
-          />
-        </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+  <Image
+    source={require('../assets/arrow-left-circle.png')}
+    style={{ width: 30, height: 30 }}
+  />
+</TouchableOpacity>
 
         <View style={{ position: 'absolute', left: 0, right: 0, alignItems: 'center' }}>
           <Image source={require('../assets/Logo.png')} />

@@ -4,12 +4,18 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import OnboardingScreen from './screens/Onboarding';
 import ProfileScreen from './screens/Profile';
+import HomeScreen from './screens/Home';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
+import { ImageContext } from './screens/ImageContext';
 
 const Stack = createNativeStackNavigator();
 
+
 export default function App() {
+  const [image, setImage] = useState(null);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [hasOnboarded, setHasOnboarded] = useState(false); // Default to false
   const [isLoading, setIsLoading] = useState(true); // Track loading state while AsyncStorage is being checked
 
@@ -46,8 +52,10 @@ export default function App() {
 
   // Handle navigation logic
   return (
+<ImageContext.Provider value={{ image, setImage, firstName, setFirstName, lastName, setLastName }}>
 <NavigationContainer>
-  <Stack.Navigator initialRouteName={hasOnboarded ? 'Profile' : 'Onboarding'}>
+  <Stack.Navigator initialRouteName={hasOnboarded ? 'Home' : 'Onboarding'}>
+     
     <Stack.Screen
       name="Onboarding"
       options={{ headerShown: false }}
@@ -60,12 +68,13 @@ export default function App() {
             await AsyncStorage.setItem('hasOnboarded', 'true');
             props.navigation.reset({
               index: 0,
-              routes: [{ name: 'Profile' }],
+              routes: [{ name: 'Home' }],
             });
           }}
         />
       )}
     </Stack.Screen>
+    <Stack.Screen name="Home"  options={{ headerShown: false }} component={HomeScreen} />
     <Stack.Screen
       name="Profile"
       options={{ headerShown: false }}
@@ -73,6 +82,7 @@ export default function App() {
     />
   </Stack.Navigator>
 </NavigationContainer>
+</ImageContext.Provider>
   );
 }
 
