@@ -1,55 +1,40 @@
-import SQLite from 'react-native-sqlite-storage';
+// database.js
+import * as SQLite from 'expo-sqlite';
 
-// Open the SQLite database
-const db = SQLite.openDatabase(
-  { name: 'menu.db', location: 'default' },
-  () => {},
-  (error) => { console.error(error); }
-);
+let db;
 
-// Function to create a table if it doesn't exist
-export const createTable = () => {
-  db.transaction((tx) => {
-    tx.executeSql(
-      `CREATE TABLE IF NOT EXISTS menu (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, description TEXT, price REAL, image TEXT);`
+export const initDatabase = async () => {
+  db = await SQLite.openDatabaseAsync('little_lemon.db');
+  return db.execAsync(`
+    CREATE TABLE IF NOT EXISTS menu (
+      id INTEGER PRIMARY KEY NOT NULL,
+      name TEXT,
+      description TEXT,
+      price TEXT,
+      image TEXT
     );
-  });
+  `);
 };
 
-// Function to insert a menu item into the table
-export const insertMenuItem = (name, description, price, image) => {
-  db.transaction((tx) => {
-    tx.executeSql(
-      'INSERT INTO menu (name, description, price, image) VALUES (?, ?, ?, ?)',
-      [name, description, price, image],
-      (tx, results) => {
-        console.log('Inserted item with ID:', results.insertId);
-      },
-      (error) => {
-        console.error('Error inserting item:', error);
-      }
+
+export const insertMenuItems = async (menuItems) => {
+  if (!db) {
+    await initDatabase();
+  }
+  for (const item of menuItems) {
+    await db.runAsync(
+      `INSERT INTO menu (name, description, price, image) VALUES (?, ?, ?, ?)`,
+      [item.name, item.description, item.price, item.image]
     );
-  });
+  }
 };
 
-// Function to fetch menu items from the database
-export const fetchMenuItems = () => {
-  return new Promise((resolve, reject) => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        'SELECT * FROM menu',
-        [],
-        (tx, results) => {
-          let items = [];
-          for (let i = 0; i < results.rows.length; i++) {
-            items.push(results.rows.item(i));
-          }
-          resolve(items);
-        },
-        (error) => {
-          reject(error);
-        }
-      );
-    });
-  });
+export const fetchMenuItems = async () => {
+  if (!db) {
+    await initDatabase();
+  }
+  const result = await db.getAllAsync(`SELECT * FROM menu`);
+  return result;
 };
+
+

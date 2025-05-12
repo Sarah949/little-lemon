@@ -2,17 +2,40 @@ import React, { useContext, useState, useEffect} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image , FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ImageContext } from './ImageContext';
+import { initDatabase, insertMenuItems, fetchMenuItems } from './database';
+
 
 export default function HomeScreen() {
  const [data, setData] = useState([]);
 
-useEffect(() => {
-  fetch('https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json')
-    .then((response) => response.json())
-    .then((data) => {
-      setData(data.menu); // Access the "menu" array directly
-    });
-}, []);
+// useEffect(() => {
+//   fetch('https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json')
+//     .then((response) => response.json())
+//     .then((data) => {
+//       setData(data.menu); // Access the "menu" array directly
+//     });
+// }, []);
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        await initDatabase();
+        const localData = await fetchMenuItems();
+        if (localData.length === 0) {
+          // Fetch from server if DB is empty
+          const response = await fetch('https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json');
+          const json = await response.json();
+          await insertMenuItems(json.menu);
+          setData(json.menu);
+        } else {
+          setData(localData);
+        }
+      } catch (error) {
+        console.error('Database error:', error);
+      }
+    };
+
+    loadData();
+  }, []);
 
   const navigation = useNavigation();
   const { image, firstName, lastName } = useContext(ImageContext);
@@ -58,26 +81,26 @@ useEffect(() => {
           </View>
       </View>
       <Text style={styles.TitleText}>ORDER FOR DELIVERY!</Text>
-      <FlatList
+<FlatList
   data={data}
   renderItem={({ item }) => (
     <View style={styles.itemContainer}>
-    
-         <View style={styles.textContainer}>
+      <View style={styles.textContainer}>
         <Text style={styles.itemTitle}>{item.name}</Text>
         <Text style={styles.itemDescription}>{item.description}</Text>
         <Text style={styles.itemprice}>${item.price}</Text>
       </View>
-    
-        <Image
+      <Image
         source={{
-          uri: `https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${item.image}?raw=true`,
+          uri: item.image.startsWith('https')
+            ? item.image
+            : `https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${item.image}?raw=true`,
         }}
-           style={styles.itemImage}
+        style={styles.itemImage}
       />
     </View>
   )}
-  keyExtractor={(item) => item.name}
+  keyExtractor={(item, index) => item.name + index}
 />
     </View>
   );
