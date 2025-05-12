@@ -1,9 +1,19 @@
-import React, { useContext } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, { useContext, useState, useEffect} from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image , FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ImageContext } from './ImageContext';
 
 export default function HomeScreen() {
+ const [data, setData] = useState([]);
+
+useEffect(() => {
+  fetch('https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json')
+    .then((response) => response.json())
+    .then((data) => {
+      setData(data.menu); // Access the "menu" array directly
+    });
+}, []);
+
   const navigation = useNavigation();
   const { image, firstName, lastName } = useContext(ImageContext);
 
@@ -35,8 +45,40 @@ export default function HomeScreen() {
           )}
         </TouchableOpacity>
       </View>
-
       {/* ...rest of your screen */}
+      <View style={styles.contain}>
+        <Text style={styles.Title}>Little Lemon</Text>
+        <Text style={styles.Subtitle}>Chicago</Text>
+        <View style={styles.footer}>
+        <Text style={styles.Text}>We are a family owned Mediterranean restaurant, focused on traditional recipes served with a modern twist.</Text>
+         <Image
+            source={require('../assets/Heroimage.png')}
+           style={styles.profileImage}
+          />
+          </View>
+      </View>
+      <Text style={styles.TitleText}>ORDER FOR DELIVERY!</Text>
+      <FlatList
+  data={data}
+  renderItem={({ item }) => (
+    <View style={styles.itemContainer}>
+    
+         <View style={styles.textContainer}>
+        <Text style={styles.itemTitle}>{item.name}</Text>
+        <Text style={styles.itemDescription}>{item.description}</Text>
+        <Text style={styles.itemprice}>${item.price}</Text>
+      </View>
+    
+        <Image
+        source={{
+          uri: `https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${item.image}?raw=true`,
+        }}
+           style={styles.itemImage}
+      />
+    </View>
+  )}
+  keyExtractor={(item) => item.name}
+/>
     </View>
   );
 }
@@ -44,13 +86,28 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff'
   },
   header: {
     height: 80,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-    backgroundColor: '#fff',
+    backgroundColor: '#fff'
+  },
+  contain: {
+    height: 250,
+   
+    position: 'relative',
+    backgroundColor: '#495E57',
+    paddingHorizontal: 0,
+  },
+  footer: {
+    alignItems: 'center',
+    paddingVertical: 0,
+    flexDirection: 'row',
+    // justifyContent: 'space-between',
+    paddingHorizontal: 0,
   },
   logoContainer: {
     alignItems: 'center',
@@ -80,6 +137,66 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+    Title: {
+    fontSize: 40,
+    padding: 5,
+    color: '#F4CE14',
+    textAlign: 'left',
+    fontWeight: 'bold',
+  },
+  Subtitle: {
+    fontSize: 24,
+    padding: 5,
+    color: '#fff',
+    textAlign: 'left',
+    fontWeight: 'bold',
+  },
+   Text: {
+    fontSize: 15,
+    padding: 5,
+    color: '#fff',
+    textAlign: 'left',
+    width:250,
+  },
+  TitleText: {
+    fontSize: 20,
+    padding: 5,
+    fontWeight: 'bold',
+    textAlign: 'left',
+    
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 10,
+    alignItems: 'right',
+    
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    justifyContent: 'space-between',
+  },
+  textContainer: {
+    flex: 1,
+    paddingRight: 10,
+  },
+  itemTitle: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 4,
+  },
+  itemDescription: {
+    fontSize: 14,
+    color: '#555',
+  },
+  itemImage: {
+    width: 100,
+    height: 100,
   },
 });
 
