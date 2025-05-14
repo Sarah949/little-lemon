@@ -1,5 +1,6 @@
 // database.js
 import * as SQLite from 'expo-sqlite';
+import { useState, useEffect } from 'react';
 
 let db;
 
@@ -23,19 +24,28 @@ export const initDatabase = async () => {
 };
 
 // Fetch menu items filtered by selected categories
-export const fetchMenuItemsByCategory = async (categories) => {
+export const fetchMenuItemsByCategoryAndSearch = async (categories, searchQuery) => {
   if (!db) {
     await initDatabase();
   }
 
-  if (!categories.length) {
-    // Return all items if no category selected
-    return await db.getAllAsync(`SELECT * FROM menu`);
+  let query = `SELECT * FROM menu WHERE name LIKE ?`; // Base query to filter by dish name
+  const params = [`%${searchQuery}%`]; // Params for the name filter
+
+  if (categories.length > 0) {
+    // Add category filter if selected categories are available
+    const placeholders = categories.map(() => '?').join(',');
+    query += ` AND category IN (${placeholders})`;
+    params.push(...categories); // Append the selected categories
   }
 
-  const placeholders = categories.map(() => '?').join(',');
-  const query = `SELECT * FROM menu WHERE category IN (${placeholders})`;
-  return await db.getAllAsync(query, categories);
+  try {
+    const result = await db.getAllAsync(query, params);
+    return result;
+  } catch (error) {
+    console.error('Database error:', error);
+    return [];
+  }
 };
 
 

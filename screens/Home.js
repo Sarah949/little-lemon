@@ -1,8 +1,8 @@
 import React, { useContext, useState, useEffect} from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image , FlatList } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image , FlatList , TextInput  } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ImageContext } from './ImageContext';
-import { initDatabase, insertMenuItems, fetchMenuItems, fetchMenuItemsByCategory  } from './database';
+import { initDatabase, insertMenuItems, fetchMenuItems, fetchMenuItemsByCategoryAndSearch   } from './database';
 import CategoryList from './CategoryList';
 
 
@@ -11,21 +11,27 @@ export default function HomeScreen() {
   
 const [selectedCategories, setSelectedCategories] = useState([]);
 const [data, setData] = useState([]);
+const [searchQuery, setSearchQuery] = useState('');
+const [filteredData, setFilteredData] = useState([]);
 
-useEffect(() => {
-  const filterData = async () => {
-    try {
-      const filteredData = await fetchMenuItemsByCategory(selectedCategories);
-      setData(filteredData);
-    } catch (error) {
-      console.error('Filtering error:', error);
-    }
+
+ useEffect(() => {
+    const debounceTimeout = setTimeout(async () => {
+      try {
+        const filtered = await fetchMenuItemsByCategoryAndSearch(selectedCategories, searchQuery);
+        setFilteredData(filtered);
+      } catch (error) {
+        console.error('Search error:', error);
+      }
+    }, 500); // Debounce delay (500ms)
+
+    return () => clearTimeout(debounceTimeout); // Cleanup on search change
+  }, [searchQuery, selectedCategories]); // Re-run whenever searchQuery or selectedCategories changes
+
+    // Handle search input changes
+  const handleSearchChange = (text) => {
+    setSearchQuery(text);
   };
-
-  filterData();
-}, [selectedCategories]);
-
-
 
 
 const toggleCategory = (category) => {
@@ -45,32 +51,35 @@ const toggleCategory = (category) => {
 //       setData(data.menu); // Access the "menu" array directly
 //     });
 // }, []);
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        await initDatabase();
-        const localData = await fetchMenuItems();
-        if (localData.length === 0) {
-          // Fetch from server if DB is empty
-          const response = await fetch('https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json');
-          const json = await response.json();
-          await insertMenuItems(json.menu);
-          setData(json.menu);
-        } else {
-          setData(localData);
-        }
-      } catch (error) {
-        console.error('Database error:', error);
-      }
-    };
+useEffect(() => {
+  const loadData = async () => {
+    try {
+      const dbInstance = await initDatabase();
 
-    loadData();
-  }, []);
+      const localData = await fetchMenuItems();
+      if (localData.length === 0) {
+        const response = await fetch('https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json');
+        const json = await response.json();
+
+        await insertMenuItems(json.menu);
+        setData(json.menu);
+      } else {
+        setData(localData);
+      }
+    } catch (error) {
+      console.error('Database error:', error);
+    }
+  };
+
+  loadData();
+}, []);
 
   const navigation = useNavigation();
   const { image, firstName, lastName } = useContext(ImageContext);
 
   const initials = `${firstName?.charAt(0) ?? ''}${lastName?.charAt(0) ?? ''}`.toUpperCase();
+
+  const [searchText, setSearchText] = useState('');
 
   return (
     <View style={styles.container}>
@@ -109,6 +118,12 @@ const toggleCategory = (category) => {
            style={styles.profileImage}
           />
           </View>
+          <TextInput
+  style={styles.searchBar}
+  placeholder="Search menu..."
+   value={searchQuery}
+        onChangeText={handleSearchChange}
+/>
       </View>
       <Text style={styles.TitleText}>ORDER FOR DELIVERY!</Text>
       <View style={{ paddingVertical: 10, paddingHorizontal: 0 }}>
@@ -118,7 +133,8 @@ const toggleCategory = (category) => {
   />
 </View>
 <FlatList
-  data={data}
+  data={filteredData.length ? filteredData : data}
+  // data={data}
   renderItem={({ item }) => (
     <View style={styles.itemContainer}>
       <View style={styles.textContainer}>
@@ -155,7 +171,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   contain: {
-    height: 250,
+    height: 280,
    
     position: 'relative',
     backgroundColor: '#495E57',
@@ -257,5 +273,14 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
   },
+  searchBar: {
+  height: 40,
+  borderColor: '#ccc',
+  borderWidth: 1,
+  borderRadius: 8,
+  paddingHorizontal: 10,
+  margin: 10,
+  backgroundColor: '#fff',
+},
 });
 
