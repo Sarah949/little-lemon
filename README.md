@@ -52,3 +52,13 @@ Below is the wireframe created during the design phase using Figma:
 ---
 
 ## 🔍 Repository Structure
+little-lemon/
+├── assets/ # Contains images, fonts, wireframes, etc.
+│ └── wireframe.png # Design wireframe from Figma
+├── components/ # Reusable React Native components
+├── navigation/ # Navigation setup (e.g., stack, tab navigators)
+├── screens/ # App screens like Onboarding, Profile, Home
+├── utils/ # Helper functions and constants
+├── App.js # Entry point of the application
+├── package.json # Project dependencies and scripts
+└── README.md # Project documentation
