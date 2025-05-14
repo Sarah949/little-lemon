@@ -4,7 +4,7 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-nati
 const categories = [
   'starters',
   'mains',
-  'Desserts',
+  'desserts',
   'Drinks',
   'Vegan',
   'Specials',

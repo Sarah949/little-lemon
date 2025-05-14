@@ -2,13 +2,31 @@ import React, { useContext, useState, useEffect} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image , FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ImageContext } from './ImageContext';
-import { initDatabase, insertMenuItems, fetchMenuItems } from './database';
+import { initDatabase, insertMenuItems, fetchMenuItems, fetchMenuItemsByCategory  } from './database';
 import CategoryList from './CategoryList';
 
 
 export default function HomeScreen() {
 
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  
+const [selectedCategories, setSelectedCategories] = useState([]);
+const [data, setData] = useState([]);
+
+useEffect(() => {
+  const filterData = async () => {
+    try {
+      const filteredData = await fetchMenuItemsByCategory(selectedCategories);
+      setData(filteredData);
+    } catch (error) {
+      console.error('Filtering error:', error);
+    }
+  };
+
+  filterData();
+}, [selectedCategories]);
+
+
+
 
 const toggleCategory = (category) => {
   setSelectedCategories((prev) =>
@@ -18,7 +36,7 @@ const toggleCategory = (category) => {
   );
 };
 
- const [data, setData] = useState([]);
+
 
 // useEffect(() => {
 //   fetch('https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json')
