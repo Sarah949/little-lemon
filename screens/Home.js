@@ -3,9 +3,21 @@ import { View, Text, StyleSheet, TouchableOpacity, Image , FlatList } from 'reac
 import { useNavigation } from '@react-navigation/native';
 import { ImageContext } from './ImageContext';
 import { initDatabase, insertMenuItems, fetchMenuItems } from './database';
+import CategoryList from './CategoryList';
 
 
 export default function HomeScreen() {
+
+  const [selectedCategories, setSelectedCategories] = useState([]);
+
+const toggleCategory = (category) => {
+  setSelectedCategories((prev) =>
+    prev.includes(category)
+      ? prev.filter((item) => item !== category)
+      : [...prev, category]
+  );
+};
+
  const [data, setData] = useState([]);
 
 // useEffect(() => {
@@ -81,6 +93,12 @@ export default function HomeScreen() {
           </View>
       </View>
       <Text style={styles.TitleText}>ORDER FOR DELIVERY!</Text>
+      <View style={{ paddingVertical: 10, paddingHorizontal: 0 }}>
+  <CategoryList
+    selectedCategories={selectedCategories}
+    onToggleCategory={toggleCategory}
+  />
+</View>
 <FlatList
   data={data}
   renderItem={({ item }) => (
