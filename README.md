@@ -7,7 +7,9 @@ This capstone project marks the culmination of the React Native specialization. 
 ## 🚀 Project Overview
 
 This application simulates a mobile experience for **Little Lemon**, a fictional food delivery service. It includes user onboarding, profile management, home screen features, and dynamic data rendering, closely following modern UX/UI and software development practices.
-
+![home Screen](assets\homescreen.jpeg) 
+![Onboarding Screen](assets\onboardingscreeen.jpeg) 
+![Profile Screen](assets\profilescreen.jpeg) 
 ---
 
 ## 📷 Wireframe
@@ -52,3 +54,13 @@ Below is the wireframe created during the design phase using Figma:
 ---
 
 ## 🔍 Repository Structure
+little-lemon/
+├── assets/ # Contains images, fonts, wireframes, etc.
+│ └── wireframe.png # Design wireframe from Figma
+├── components/ # Reusable React Native components
+├── navigation/ # Navigation setup (e.g., stack, tab navigators)
+├── screens/ # App screens like Onboarding, Profile, Home
+├── utils/ # Helper functions and constants
+├── App.js # Entry point of the application
+├── package.json # Project dependencies and scripts
+└── README.md # Project documentation
