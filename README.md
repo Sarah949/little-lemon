@@ -7,9 +7,7 @@ This capstone project marks the culmination of the React Native specialization. 
 ## 🚀 Project Overview
 
 This application simulates a mobile experience for **Little Lemon**, a fictional food delivery service. It includes user onboarding, profile management, home screen features, and dynamic data rendering, closely following modern UX/UI and software development practices.
-![homeScreen](assets/homescreen.jpeg) 
-![OnboardingScreen](assets/onboardingscreeen.jpeg) 
-![ProfileScreen](assets/profilescreen.jpeg) 
+![homeScreen](assets/homescreen.jpeg) ![OnboardingScreen](assets/onboardingscreeen.jpeg) ![ProfileScreen](assets/profilescreen.jpeg) 
 ---
 
 ## 📷 Wireframe
